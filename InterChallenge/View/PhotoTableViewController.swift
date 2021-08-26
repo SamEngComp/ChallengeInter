@@ -1,40 +1,55 @@
 import Alamofire
 import UIKit
 
-class PhotoTableViewController: UITableViewController {
+class PhotoTableViewController: UITableViewController, PhotoViewDelegate {
 
-    var albumId = Int()
-    var userName = String()
-    var photos = [Photo]()
+    private var albumId: Int?
+    private var userName: String?
+    private var photos = [Photo]()
+    private var presenter: PhotosPresenter?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = "Fotos de \(userName)"
+        
         tableView.register(UINib(nibName: "PhotoTableViewCell", bundle: nil), forCellReuseIdentifier: "PhotoCell")
-        fillPhotos(from: albumId)
+        //fillPhotos(from: albumId)
     }
     
-    private func fillPhotos(from albumId: Int) {
-        AF.request("https://jsonplaceholder.typicode.com/photos?albumId=\(albumId)").validate().responseJSON { response in
-            guard response.error == nil else {
-                let alert = UIAlertController(title: "Erro", message: "Algo errado aconteceu. Tente novamente mais tarde.", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
-                    alert.dismiss(animated: true)
-                }))
-                self.present(alert, animated: true)
-                return
-            }
-            
-            do {
-                if let data = response.data {
-                    let models = try JSONDecoder().decode([Photo].self, from: data)
-                    self.photos = models
-                    self.tableView.reloadData()
-                }
-            } catch {
-                print("Error during JSON serialization: \(error.localizedDescription)")
-            }
+    func setupPhotoTable(presenter: PhotosPresenter, albumId: Int, userName: String) {
+        self.presenter  = presenter
+        self.albumId    = albumId
+        self.userName   = userName
+        startPhotoTable()
+    }
+    
+    private func startPhotoTable() {
+        guard let albumId = albumId,
+              let userName = userName else {
+            errorPresent()
+            return
         }
+        presenter?.setViewDelegate(viewDelegate: self)
+        presenter?.getAllPhotos(albumId: albumId)
+        navigationItem.title = "Fotos de \(userName)"
+    }
+    
+    func fillPhotos(photos: [Photo]?) {
+        guard let photos = photos else {
+            errorPresent()
+            return
+        }
+        self.photos = photos
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+    
+    private func errorPresent() {
+        let alert = UIAlertController(title: "Erro", message: "Algo errado aconteceu. Tente novamente mais tarde.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
+            alert.dismiss(animated: true)
+        }))
+        self.present(alert, animated: true)
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -49,7 +64,7 @@ class PhotoTableViewController: UITableViewController {
 
         let photo = photos[indexPath.row]
         cell.titleLabel.text = photo.title
-
+        
         AF.download(photo.thumbnailUrl).responseData { response in
             switch response.result {
             case .success(let data):
