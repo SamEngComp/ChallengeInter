@@ -2,7 +2,7 @@ import XCTest
 @testable import InterChallenge
 
 class AlbumPresenterTests: XCTestCase {
-    func test_getAllPosts_should_call_getUser_and_pass_to_viewDelegate() {
+    func test_getAllAlbums_should_call_fetchUsers_and_pass_the_value_with_albums_to_viewDelegate() {
         let userId = 100
         let albums = [Album(id: 0, userId: 12, title: "title"),
                       Album(id: 1, userId: 10, title: "title")]
@@ -19,7 +19,7 @@ class AlbumPresenterTests: XCTestCase {
         XCTAssertNil(albumViewDelegateMock.error)
     }
     
-    func test_getAllPosts_should_call_getUser_and_pass_to_viewDelegate2() {
+    func test_getAllAlbums_should_call_fetchUsers_and_pass_the_value_with_error_to_viewDelegate() {
         let userId = 100
         let albumViewDelegateMock = AlbumViewDelegateMock()
         let remoteFetchAlbumsSpy = RemoteFetchAlbumsSpy()
@@ -34,7 +34,7 @@ class AlbumPresenterTests: XCTestCase {
         XCTAssertNil(albumViewDelegateMock.albums)
     }
 
-    func test_presentAlbum_should_call_didEnterListAlbum_of_coordinator() {
+    func test_presentPhoto_should_call_didEnterPhoto_of_coordinator() {
         let albumId = 100
         let name = "name-test"
         let nextAlbumCoordinatorSpy = NextAlbumCoordinatorSpy()

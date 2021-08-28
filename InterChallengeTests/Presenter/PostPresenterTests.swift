@@ -2,7 +2,7 @@ import XCTest
 @testable import InterChallenge
 
 class PostPresenterTests: XCTestCase {
-    func test_getAllPosts_should_call_getUser_and_pass_to_viewDelegate() {
+    func test_getAllPosts_should_call_fetchUsers_and_pass_the_value_with_posts_to_viewDelegate() {
         let userId = 100
         let posts = [Post(id: 1, userId: 12, title: "title-test", body: "body-test"),
                      Post(id: 2, userId: 13, title: "title-test", body: "body-test"),
@@ -20,7 +20,7 @@ class PostPresenterTests: XCTestCase {
         XCTAssertNil(postViewDelegateMock.error)
     }
     
-    func test_getAllPosts_should_call_getUser_and_pass_to_viewDelegate2() {
+    func test_getAllPosts_should_call_fetchUsers_and_pass_the_value_with_error_to_viewDelegate() {
         let userId = 100
         let postViewDelegateMock = PostViewDelegateMock()
         let remoteFetchPostsSpy = RemoteFetchPostsSpy()
@@ -35,7 +35,7 @@ class PostPresenterTests: XCTestCase {
         XCTAssertNil(postViewDelegateMock.posts)
     }
 
-    func test_presentAlbum_should_call_didEnterListAlbum_of_coordinator() {
+    func test_presentComment_should_call_didEnterComment_of_coordinator() {
         let postId = 100
         let name = "name-test"
         let nextPostCoordinatorSpy = NextPostCoordinatorSpy()

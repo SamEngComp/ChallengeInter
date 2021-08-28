@@ -2,7 +2,7 @@ import XCTest
 @testable import InterChallenge
 
 class UserPresenterTests: XCTestCase {
-    func test_getAllUsers_should_call_fetchUsers_and_pass_to_viewDelegate() {
+    func test_getAllUsers_should_call_fetchUsers_and_pass_the_value_with_users_to_viewDelegate() {
         let users = [User(id: 1, name: "name", username: "username", email: "email@fake.com", phone: "(88) 87665 8876"),
                      User(id: 2, name: "name", username: "username", email: "email@fake.com", phone: "(88) 87665 8876"),
                      User(id: 3, name: "name", username: "username", email: "email@fake.com", phone: "(88) 87665 8876")]
@@ -19,7 +19,7 @@ class UserPresenterTests: XCTestCase {
         XCTAssertEqual(users, userViewDelegateMock.users)
     }
     
-    func test_() {
+    func test_getAllUsers_should_call_fetchUsers_and_pass_the_value_with_error_to_viewDelegate() {
         let userViewDelegateMock = UserViewDelegateMock()
         let remoteFetchUsersSpy = RemoteFetchUsersSpy()
         let sut = UserPresenter(service: remoteFetchUsersSpy)

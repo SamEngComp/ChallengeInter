@@ -2,7 +2,7 @@ import XCTest
 @testable import InterChallenge
 
 class PhotoPresenterTests: XCTestCase {
-    func test_getAllPosts_should_call_getUser_and_pass_to_viewDelegate() {
+    func test_getAllPhotos_should_call_fetchUsers_and_pass_the_value_with_photos_to_viewDelegate() {
         let albumId = 100
         let photos = [Photo(id: 0, albumId: 11, title: "title", url: "image.com", thumbnailUrl: "image.com"),
                      Photo(id: 1, albumId: 12, title: "title", url: "image.com", thumbnailUrl: "image.com")]
@@ -19,7 +19,7 @@ class PhotoPresenterTests: XCTestCase {
         XCTAssertNil(photoViewDelegateMock.error)
     }
 
-    func test_getAllPosts_should_call_getUser_and_pass_to_viewDelegate2() {
+    func test_getAllPhotos_should_call_fetchUsers_and_pass_the_value_with_error_to_viewDelegate() {
         let albumId = 100
         let photoViewDelegateMock = PhotoViewDelegateMock()
         let remoteFetchPhotosSpy = RemoteFetchPhotosSpy()
@@ -34,7 +34,7 @@ class PhotoPresenterTests: XCTestCase {
         XCTAssertNil(photoViewDelegateMock.photos)
     }
 
-    func test_presentAlbum_should_call_didEnterListAlbum_of_coordinator() {
+    func test_presentPhoto_should_call_didEnterPhoto_of_coordinator() {
         let imageUrl = "image.com"
         let name = "name-test"
         let nextPhotoCoordinatorSpy = NextPhotoCoordinatorSpy()

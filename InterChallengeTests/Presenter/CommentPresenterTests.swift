@@ -2,7 +2,7 @@ import XCTest
 @testable import InterChallenge
 
 class CommentPresenterTests: XCTestCase {
-    func test_getAllPosts_should_call_getUser_and_pass_to_viewDelegate() {
+    func test_getAllComments_should_call_fetchUsers_and_pass_the_value_with_comments_to_viewDelegate() {
         let postId = 100
         let comments = [Comment(id: 1, postId: 10, name: "name", body: "body"),
                         Comment(id: 2, postId: 12, name: "name", body: "body"),
@@ -20,7 +20,7 @@ class CommentPresenterTests: XCTestCase {
         XCTAssertNil(commentViewDelegateMock.error)
     }
 
-    func test_getAllPosts_should_call_getUser_and_pass_to_viewDelegate2() {
+    func test_getAllComments_should_call_fetchUsers_and_pass_the_value_with_error_to_viewDelegate() {
         let postId = 100
         let commentViewDelegateMock = CommentViewDelegateMock()
         let remoteFetchCommentsSpy = RemoteFetchCommentsSpy()

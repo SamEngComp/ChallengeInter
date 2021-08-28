@@ -30,7 +30,7 @@ class RemoteFetchPhotosTests: XCTestCase {
         wait(for: [exp], timeout: 1)
     }
     
-    func test_fetch_should_complete_with_users_if_client_completes_with_valid_data() {
+    func test_fetch_should_complete_with_photos_if_client_completes_with_valid_data() {
         let url = URL(string: "http://fake-url-test.com")!
         let httpClientSpy = HttpClientSpy()
         let sut = RemoteFetchPhotos(url: url, httpGetClient: httpClientSpy)
