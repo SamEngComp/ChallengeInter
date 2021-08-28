@@ -31,10 +31,8 @@ extension AlbumsCoordinator {
     func showScene() {
         guard let userId = userId,
               let name = name else { return }
-        let url = URL(string: "https://jsonplaceholder.typicode.com/albums?userId=")!
-        
         let viewController = AlbumTableViewController()
-        let service        = RemoteFetchAlbums(url: url, httpGetClient: AlamofireAdapter())
+        let service        = RemoteAlbumService()
         let presenter      = AlbumPresenter(service: service)
         
         presenter.setCoordinatorDelegate(coordinatorDelegate: self)

@@ -31,10 +31,8 @@ extension CommentCoordinator {
     func showScene() {
         guard let postId = postId,
               let name = name else { return }
-        let url = URL(string: "https://jsonplaceholder.typicode.com/comments?postId=")!
-        
         let viewController = CommentTableViewController()
-        let service        = RemoteFetchComments(url: url, httpGetClient: AlamofireAdapter())
+        let service        = RemoteCommentService()
         let presenter      = CommentPresenter(service: service)
         viewController.setupComment(presenter: presenter, postId: postId, name: name)
         

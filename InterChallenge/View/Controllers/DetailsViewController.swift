@@ -51,7 +51,7 @@ class DetailsViewController: UIViewController {
     }
     
     func fillDetailImage(imageUrl: String) {
-        AlamofireAdapter.downloadPhoto(url: imageUrl) { data in
+        ImageDownloadService.downloadPhoto(url: imageUrl) { data in
             if let data = data {
                 self.detailImageView.image = UIImage(data: data) ?? UIImage()
             } else {

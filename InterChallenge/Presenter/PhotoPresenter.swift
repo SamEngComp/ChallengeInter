@@ -12,9 +12,9 @@ protocol NextPhotoCoordinatorDelegate: class {
 class PhotoPresenter {
     private weak var viewDelegate: PhotoViewDelegate?
     private weak var coordinatorDelegate: NextPhotoCoordinatorDelegate?
-    private let service: FetchPhotos
+    private let service: PhotoService
     
-    init(service: FetchPhotos) {
+    init(service: PhotoService) {
         self.service = service
     }
     
@@ -31,7 +31,7 @@ class PhotoPresenter {
     }
     
     func getAllPhotos(albumId: Int) {
-        service.fetch(albumId: albumId) { result in
+        service.fetchPhotos(albumId: albumId) { result in
             switch result {
             case .success(let photos):
                 self.viewDelegate?.fillPhotos(photos: photos)

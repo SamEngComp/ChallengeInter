@@ -56,7 +56,7 @@ class PhotoTableViewController: UITableViewController, PhotoViewDelegate {
 
         let photo = photos[indexPath.row]
         cell.titleLabel.text = photo.title
-        AlamofireAdapter.downloadPhoto(url: photo.thumbnailUrl) { data in
+        ImageDownloadService.downloadPhoto(url: photo.thumbnailUrl) { data in
             if let data = data {
                 cell.photoImageView.image = UIImage(data: data)
             }

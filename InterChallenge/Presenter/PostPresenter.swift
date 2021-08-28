@@ -12,9 +12,9 @@ protocol NextPostCoordinatorDelegate: class {
 class PostPresenter {
     private weak var coordinatorDelegate: NextPostCoordinatorDelegate?
     private weak var viewDelegate: PostViewDelegate?
-    private let service: FetchPosts
+    private let service: PostService
     
-    init(service: FetchPosts) {
+    init(service: PostService) {
         self.service = service
     }
     
@@ -31,7 +31,7 @@ class PostPresenter {
     }
     
     func getAllPosts(userId: Int) {
-        service.fetch(userId: userId) { result in
+        service.fetchPosts(userId: userId) { result in
             switch result {
             case .success(let posts):
                 self.viewDelegate?.fillPosts(posts: posts)
@@ -41,4 +41,6 @@ class PostPresenter {
             
         }
     }
+    
+    
 }

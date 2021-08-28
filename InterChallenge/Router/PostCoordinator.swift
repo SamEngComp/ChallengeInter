@@ -31,10 +31,8 @@ extension PostCoordinator {
     func showScene() {
         guard let userId = userId,
               let name = name else { return }
-        let url = URL(string: "https://jsonplaceholder.typicode.com/posts?userId=")!
-        
         let viewController = PostTableViewController()
-        let service        = RemoteFetchPosts(url: url, httpGetClient: AlamofireAdapter())
+        let service        = RemotePostService()
         let presenter      = PostPresenter(service: service)
         
         presenter.setCoordinatorDelegate(coordinatorDelegate: self)

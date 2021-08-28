@@ -13,9 +13,9 @@ protocol NextUserCoordinatorDelegate: class {
 class UserPresenter {
     private weak var coordinatorDelegate: NextUserCoordinatorDelegate?
     private weak var viewDelegate: UserViewDelegate?
-    private let service: FetchUsers
+    private let service: UserService
     
-    init(service: FetchUsers) {
+    init(service: UserService) {
         self.service = service
     }
     
@@ -36,7 +36,7 @@ class UserPresenter {
     }
     
     func getAllUsers() {
-        service.fetch() { result in
+        service.fetchUsers() { result in
             switch result {
             case .success(let users):
                 self.viewDelegate?.fillUsers(users: users)

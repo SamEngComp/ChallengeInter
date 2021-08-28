@@ -16,10 +16,8 @@ class AppCoordinator: Coordinator {
 
 extension AppCoordinator {
     func showScene() {
-        let url = URL(string: "https://jsonplaceholder.typicode.com/users")!
-        
         let viewController = UserTableViewController()
-        let service   = RemoteFetchUsers(url: url, httpGetClient: AlamofireAdapter())
+        let service   = RemoteUserService()
         let presenter = UserPresenter(service: service)
         
         presenter.setCoordinatorDelegate(coordinatorDelegate: self)

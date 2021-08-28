@@ -7,9 +7,9 @@ protocol CommentViewDelegate: class {
 
 class CommentPresenter {
     private weak var viewDelegate: CommentViewDelegate?
-    private let service: FetchComments
+    private let service: CommentService
     
-    init(service: FetchComments) {
+    init(service: CommentService) {
         self.service = service
     }
     
@@ -18,7 +18,7 @@ class CommentPresenter {
     }
     
     func getAllComments(postId: Int) {
-        service.fetch(postId: postId) { result in
+        service.fetchComments(postId: postId) { result in
             switch result {
             case .success(let comments):
                 self.viewDelegate?.fillComments(comments: comments)

@@ -31,10 +31,8 @@ extension PhotosCoordinator {
     func showScene() {
         guard let albumId   = albumId,
               let name  = name else { return }
-        let url = URL(string: "https://jsonplaceholder.typicode.com/photos?albumId=")!
-        
         let viewController  = PhotoTableViewController()
-        let service         = RemoteFetchPhotos(url: url, httpGetClient: AlamofireAdapter())
+        let service         = RemotePhotoService()
         let presenter       = PhotoPresenter(service: service)
         
         presenter.setCoordinatorDelegate(coordinatorDelegate: self)

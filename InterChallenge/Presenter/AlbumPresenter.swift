@@ -12,9 +12,9 @@ protocol NextAlbumCoordinatorDelegate: class {
 class AlbumPresenter {
     private weak var viewDelegate: AlbumViewDelegate?
     private weak var coordinatorDelegate: NextAlbumCoordinatorDelegate?
-    private let service: FetchAlbums
+    private let service: AlbumService
     
-    init(service: FetchAlbums) {
+    init(service: AlbumService) {
         self.service = service
     }
     
@@ -31,7 +31,7 @@ class AlbumPresenter {
     }
     
     func getAllAlbums(userId: Int) {
-        service.fetch(userId: userId) { result in
+        service.fetchAlbums(userId: userId) { result in
             switch result {
             case .success(let albums):
                 self.viewDelegate?.fillAlbums(albums: albums)
