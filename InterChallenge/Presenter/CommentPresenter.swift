@@ -1,14 +1,15 @@
 import Foundation
 
-protocol CommentViewDelegate: NSObjectProtocol {
-    func fillComments(comments: [Comment]?)
+protocol CommentViewDelegate: class {
+    func fillComments(comments: [Comment])
+    func errorPresent(error: DomainError)
 }
 
 class CommentPresenter {
     private weak var viewDelegate: CommentViewDelegate?
-    private let service: CommentService
+    private let service: FetchComments
     
-    init(service: CommentService) {
+    init(service: FetchComments) {
         self.service = service
     }
     
@@ -17,8 +18,14 @@ class CommentPresenter {
     }
     
     func getAllComments(postId: Int) {
-        self.service.getComments(postId: postId) { comments in
-            self.viewDelegate?.fillComments(comments: comments)
+        service.fetch(postId: postId) { result in
+            switch result {
+            case .success(let comments):
+                self.viewDelegate?.fillComments(comments: comments)
+            case .failure(let error):
+                self.viewDelegate?.errorPresent(error: error)
+            }
+            
         }
     }
 }

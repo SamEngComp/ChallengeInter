@@ -1,7 +1,8 @@
 import Foundation
 
-protocol PostViewDelegate: NSObjectProtocol {
-    func fillPosts(posts: [Post]?)
+protocol PostViewDelegate: class {
+    func fillPosts(posts: [Post])
+    func errorPresent(error: DomainError)
 }
 
 protocol NextPostCoordinatorDelegate: class {
@@ -11,9 +12,9 @@ protocol NextPostCoordinatorDelegate: class {
 class PostPresenter {
     private weak var coordinatorDelegate: NextPostCoordinatorDelegate?
     private weak var viewDelegate: PostViewDelegate?
-    private let service: PostService
+    private let service: FetchPosts
     
-    init(service: PostService) {
+    init(service: FetchPosts) {
         self.service = service
     }
     
@@ -25,17 +26,19 @@ class PostPresenter {
         self.coordinatorDelegate = coordinatorDelegate
     }
     
-    func presentPostDetails(userId: Int, name: String) {
-        self.coordinatorDelegate?.didEnterComment(with: userId, by: name)
-    }
-    
     func presentComment(postId: Int, name: String) {
         self.coordinatorDelegate?.didEnterComment(with: postId, by: name)
     }
     
     func getAllPosts(userId: Int) {
-        service.getPosts(userId: userId) { posts in
-            self.viewDelegate?.fillPosts(posts: posts)
+        service.fetch(userId: userId) { result in
+            switch result {
+            case .success(let posts):
+                self.viewDelegate?.fillPosts(posts: posts)
+            case .failure(let error):
+                self.viewDelegate?.errorPresent(error: error)
+            }
+            
         }
     }
 }
