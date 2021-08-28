@@ -2,44 +2,44 @@ import XCTest
 @testable import InterChallenge
 
 class AlbumPresenterTests: XCTestCase {
-    func test_getAllPosts_should_call_getUser_and_pass_to_viewDelegate() {
+    func test_getAllAlbums_should_call_fetchUsers_and_pass_the_value_with_albums_to_viewDelegate() {
         let userId = 100
         let albums = [Album(id: 0, userId: 12, title: "title"),
                       Album(id: 1, userId: 10, title: "title")]
         let albumViewDelegateMock = AlbumViewDelegateMock()
-        let remoteFetchAlbumsSpy = RemoteFetchAlbumsSpy()
-        let sut = AlbumPresenter(service: remoteFetchAlbumsSpy)
+        let remoteAlbumServiceSpy = RemoteAlbumServiceSpy()
+        let sut = AlbumPresenter(service: remoteAlbumServiceSpy)
         
         sut.setViewDelegate(viewDelegate: albumViewDelegateMock)
         sut.getAllAlbums(userId: userId)
-        remoteFetchAlbumsSpy.callbackWithAlbums(albums)
+        remoteAlbumServiceSpy.callbackWithAlbums(albums)
         
         XCTAssertEqual(albums, albumViewDelegateMock.albums)
-        XCTAssertEqual(userId, remoteFetchAlbumsSpy.userId)
+        XCTAssertEqual(userId, remoteAlbumServiceSpy.userId)
         XCTAssertNil(albumViewDelegateMock.error)
     }
     
-    func test_getAllPosts_should_call_getUser_and_pass_to_viewDelegate2() {
+    func test_getAllAlbums_should_call_fetchUsers_and_pass_the_value_with_error_to_viewDelegate() {
         let userId = 100
         let albumViewDelegateMock = AlbumViewDelegateMock()
-        let remoteFetchAlbumsSpy = RemoteFetchAlbumsSpy()
-        let sut = AlbumPresenter(service: remoteFetchAlbumsSpy)
+        let remoteAlbumServiceSpy = RemoteAlbumServiceSpy()
+        let sut = AlbumPresenter(service: remoteAlbumServiceSpy)
         
         sut.setViewDelegate(viewDelegate: albumViewDelegateMock)
         sut.getAllAlbums(userId: userId)
-        remoteFetchAlbumsSpy.callbackWithError(.unexpected)
+        remoteAlbumServiceSpy.callbackWithError(.unexpected)
         
         XCTAssertEqual(albumViewDelegateMock.error, .unexpected)
-        XCTAssertEqual(userId, remoteFetchAlbumsSpy.userId)
+        XCTAssertEqual(userId, remoteAlbumServiceSpy.userId)
         XCTAssertNil(albumViewDelegateMock.albums)
     }
 
-    func test_presentAlbum_should_call_didEnterListAlbum_of_coordinator() {
+    func test_presentAlbum_should_call_didEnterAlbum_of_coordinator() {
         let albumId = 100
         let name = "name-test"
         let nextAlbumCoordinatorSpy = NextAlbumCoordinatorSpy()
-        let remoteFetchAlbumsSpy = RemoteFetchAlbumsSpy()
-        let sut = AlbumPresenter(service: remoteFetchAlbumsSpy)
+        let remoteAlbumServiceSpy = RemoteAlbumServiceSpy()
+        let sut = AlbumPresenter(service: remoteAlbumServiceSpy)
         
         sut.setCoordinatorDelegate(coordinatorDelegate: nextAlbumCoordinatorSpy)
         sut.presetPhoto(albumId: albumId, name: name)
@@ -50,11 +50,11 @@ class AlbumPresenterTests: XCTestCase {
 }
 
 extension AlbumPresenterTests {
-    class RemoteFetchAlbumsSpy: FetchAlbums {
+    class RemoteAlbumServiceSpy: AlbumService {
         var userId: Int?
         var callback: ((Result<[Album], DomainError>) -> Void)?
         
-        func fetch(userId: Int, callback: @escaping (Result<[Album], DomainError>) -> Void) {
+        func fetchAlbums(userId: Int, callback: @escaping (Result<[Album], DomainError>) -> Void) {
             self.userId = userId
             self.callback = callback
         }

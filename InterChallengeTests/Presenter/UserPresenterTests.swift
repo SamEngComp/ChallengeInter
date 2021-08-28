@@ -2,31 +2,31 @@ import XCTest
 @testable import InterChallenge
 
 class UserPresenterTests: XCTestCase {
-    func test_getAllUsers_should_call_fetchUsers_and_pass_to_viewDelegate() {
+    func test_getAllUsers_should_call_fetchUsers_and_pass_the_value_with_users_to_viewDelegate() {
         let users = [User(id: 1, name: "name", username: "username", email: "email@fake.com", phone: "(88) 87665 8876"),
                      User(id: 2, name: "name", username: "username", email: "email@fake.com", phone: "(88) 87665 8876"),
                      User(id: 3, name: "name", username: "username", email: "email@fake.com", phone: "(88) 87665 8876")]
         
         let userViewDelegateMock = UserViewDelegateMock()
-        let remoteFetchUsersSpy  = RemoteFetchUsersSpy()
-        let sut = UserPresenter(service: remoteFetchUsersSpy)
+        let remoteUserServiceSpy  = RemoteUserServiceSpy()
+        let sut = UserPresenter(service: remoteUserServiceSpy)
         
         sut.setViewDelegate(viewDelegate: userViewDelegateMock)
         sut.getAllUsers()
-        remoteFetchUsersSpy.callbackWithUsers(users)
+        remoteUserServiceSpy.callbackWithUsers(users)
         
         XCTAssertNil(userViewDelegateMock.error)
         XCTAssertEqual(users, userViewDelegateMock.users)
     }
     
-    func test_() {
+    func test_getAllUsers_should_call_fetchUsers_and_pass_the_value_with_error_to_viewDelegate() {
         let userViewDelegateMock = UserViewDelegateMock()
-        let remoteFetchUsersSpy = RemoteFetchUsersSpy()
-        let sut = UserPresenter(service: remoteFetchUsersSpy)
+        let remoteUserServiceSpy = RemoteUserServiceSpy()
+        let sut = UserPresenter(service: remoteUserServiceSpy)
         
         sut.setViewDelegate(viewDelegate: userViewDelegateMock)
         sut.getAllUsers()
-        remoteFetchUsersSpy.callbackWithError(.unexpected)
+        remoteUserServiceSpy.callbackWithError(.unexpected)
         
         XCTAssertNil(userViewDelegateMock.users)
         XCTAssertEqual(.unexpected, userViewDelegateMock.error)
@@ -36,8 +36,8 @@ class UserPresenterTests: XCTestCase {
         let userId = 100
         let name = "name-test"
         let nextUserCoordinatorSpy = NextUserCoordinatorSpy()
-        let remoteFetchUsersSpy = RemoteFetchUsersSpy()
-        let sut = UserPresenter(service: remoteFetchUsersSpy)
+        let remoteUserServiceSpy = RemoteUserServiceSpy()
+        let sut = UserPresenter(service: remoteUserServiceSpy)
         
         sut.setCoordinatorDelegate(coordinatorDelegate: nextUserCoordinatorSpy)
         sut.presentAlbum(userId: userId, name: name)
@@ -50,8 +50,8 @@ class UserPresenterTests: XCTestCase {
         let userId = 100
         let name = "name-test"
         let nextUserCoordinatorSpy = NextUserCoordinatorSpy()
-        let remoteFetchUsersSpy = RemoteFetchUsersSpy()
-        let sut = UserPresenter(service: remoteFetchUsersSpy)
+        let remoteUserServiceSpy = RemoteUserServiceSpy()
+        let sut = UserPresenter(service: remoteUserServiceSpy)
         
         sut.setCoordinatorDelegate(coordinatorDelegate: nextUserCoordinatorSpy)
         sut.presentPost(userId: userId, name: name)
@@ -62,10 +62,10 @@ class UserPresenterTests: XCTestCase {
 }
 
 extension UserPresenterTests {
-    class  RemoteFetchUsersSpy: FetchUsers {
+    class  RemoteUserServiceSpy: UserService {
         var callback: ((Result<[User], DomainError>) -> Void)?
-        
-        func fetch(callback: @escaping (Result<[User], DomainError>) -> Void) {
+ 
+        func fetchUsers(callback: @escaping (Result<[User], DomainError>) -> Void) {
             self.callback = callback
         }
         
