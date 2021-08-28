@@ -3,7 +3,6 @@ import Foundation
 
 class AppCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
-        
     unowned let navigationController:UINavigationController
     
     init(navigationController: UINavigationController) {
@@ -11,20 +10,30 @@ class AppCoordinator: Coordinator {
     }
     
     func start() {
-        let viewController: ChallengeViewController  = ChallengeViewController()
-        let service                                  = UserService()
-        let presenter                                = ChallengePresenter(service: service)
+        showScene()
+    }
+}
+
+extension AppCoordinator {
+    func showScene() {
+        let url = URL(string: "https://jsonplaceholder.typicode.com/users")!
+        
+        let viewController = UserTableViewController()
+        let service   = RemoteFetchUsers(url: url, httpGetClient: AlamofireAdapter())
+        let presenter = UserPresenter(service: service)
+        
         presenter.setCoordinatorDelegate(coordinatorDelegate: self)
         viewController.setupPresenter(presenter: presenter)
+        
         self.navigationController.viewControllers = [viewController]
     }
 }
 
-extension AppCoordinator: NextChallengeCoordinatorDelegate {
+extension AppCoordinator: NextUserCoordinatorDelegate {
     func didEnterListAlbum(with userId: Int, by name: String) {
         let coordinator: AlbumsCoordinator = AlbumsCoordinator(navigationController: navigationController)
         coordinator.setDelegate(delegate: self)
-        coordinator.setDataAlbum(userId: userId, userName: name)
+        coordinator.setDataAlbum(userId: userId, name: name)
         
         childCoordinators.append(coordinator)
         coordinator.start()
@@ -33,15 +42,15 @@ extension AppCoordinator: NextChallengeCoordinatorDelegate {
     func didEnterPost(with userId: Int, by name: String) {
         let coordinator: PostCoordinator = PostCoordinator(navigationController: navigationController)
         coordinator.setDelegate(delegate: self)
-        coordinator.setDataPost(userId: userId, userName: name)
+        coordinator.setDataPost(userId: userId, name: name)
         
         childCoordinators.append(coordinator)
         coordinator.start()
     }
 }
 
-extension AppCoordinator: BackChallengeCoordinatorDelegate {
-    func navigateBackToChallengePage(newOrderCoordinator: AppCoordinator) {
+extension AppCoordinator: BackCoordinatorDelegate {
+    func navigateBackPage(newOrderCoordinator: Coordinator) {
         navigationController.popToRootViewController(animated: true)
         childCoordinators.removeLast()
     }

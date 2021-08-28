@@ -1,29 +1,25 @@
 import UIKit
 import Foundation
 
-protocol BackPostCoordinatorDelegate: class {
-    func navigateBackToPostPage(newOrderCoordinator: PostCoordinator)
-}
-
 class CommentCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     unowned let navigationController: UINavigationController
-    private var postId: Int?
-    private var userName: String?
     
-    private weak var delegate: BackPostCoordinatorDelegate?
+    private var postId: Int?
+    private var name: String?
+    private weak var delegate: BackCoordinatorDelegate?
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
     
-    func setDelegate(delegate: BackPostCoordinatorDelegate) {
+    func setDelegate(delegate: BackCoordinatorDelegate) {
         self.delegate = delegate
     }
     
-    func setDataComment(postId: Int, userName: String) {
+    func setDataComment(postId: Int, name: String) {
         self.postId     = postId
-        self.userName   = userName
+        self.name   = name
     }
     
     func start() {
@@ -34,12 +30,13 @@ class CommentCoordinator: Coordinator {
 extension CommentCoordinator {
     func showScene() {
         guard let postId = postId,
-              let userName = userName else { return }
+              let name = name else { return }
+        let url = URL(string: "https://jsonplaceholder.typicode.com/comments?postId=")!
         
-        let viewController                  = CommentTableViewController()
-        let service                         = CommentService()
-        let presenter                       = CommentPresenter(service: service)
-        viewController.setupComment(presenter: presenter, postId: postId, userName: userName)
+        let viewController = CommentTableViewController()
+        let service        = RemoteFetchComments(url: url, httpGetClient: AlamofireAdapter())
+        let presenter      = CommentPresenter(service: service)
+        viewController.setupComment(presenter: presenter, postId: postId, name: name)
         
         self.navigationController.pushViewController(viewController, animated: true)
     }

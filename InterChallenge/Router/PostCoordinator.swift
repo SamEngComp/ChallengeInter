@@ -1,29 +1,25 @@
 import UIKit
 import Foundation
 
-protocol BackChallengeCoordinatorDelegate: class {
-    func navigateBackToChallengePage(newOrderCoordinator: AppCoordinator)
-}
-
 class PostCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     unowned let navigationController: UINavigationController
-    private var userId: Int?
-    private var userName: String?
     
-    private weak var delegate: BackChallengeCoordinatorDelegate?
+    private var userId: Int?
+    private var name: String?
+    private weak var delegate: BackCoordinatorDelegate?
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
     
-    func setDelegate(delegate: BackChallengeCoordinatorDelegate) {
+    func setDelegate(delegate: BackCoordinatorDelegate) {
         self.delegate = delegate
     }
     
-    func setDataPost(userId: Int, userName: String) {
+    func setDataPost(userId: Int, name: String) {
         self.userId     = userId
-        self.userName   = userName
+        self.name   = name
     }
     
     func start() {
@@ -34,14 +30,16 @@ class PostCoordinator: Coordinator {
 extension PostCoordinator {
     func showScene() {
         guard let userId = userId,
-              let userName = userName else { return }
+              let name = name else { return }
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts?userId=")!
         
-        let viewController                  = PostTableViewController()
-        let service                         = PostService()
-        let presenter                       = PostPresenter(service: service)
+        let viewController = PostTableViewController()
+        let service        = RemoteFetchPosts(url: url, httpGetClient: AlamofireAdapter())
+        let presenter      = PostPresenter(service: service)
+        
         presenter.setCoordinatorDelegate(coordinatorDelegate: self)
-        viewController.setupPostTable(presenter: presenter, userId: userId, userName: userName)
-        
+        viewController.setupPostTable(presenter: presenter, userId: userId, name: name)
+    
         self.navigationController.pushViewController(viewController, animated: true)
     }
 }
@@ -50,15 +48,15 @@ extension PostCoordinator: NextPostCoordinatorDelegate {
     func didEnterComment(with postId: Int, by name: String) {
         let coordinator: CommentCoordinator = CommentCoordinator(navigationController: navigationController)
         coordinator.setDelegate(delegate: self)
-        coordinator.setDataComment(postId: postId, userName: name)
+        coordinator.setDataComment(postId: postId, name: name)
         
         childCoordinators.append(coordinator)
         coordinator.start()
     }
 }
 
-extension PostCoordinator: BackPostCoordinatorDelegate {
-    func navigateBackToPostPage(newOrderCoordinator: PostCoordinator) {
+extension PostCoordinator: BackCoordinatorDelegate {
+    func navigateBackPage(newOrderCoordinator: Coordinator) {
         navigationController.popToRootViewController(animated: true)
         childCoordinators.removeLast()
     }
