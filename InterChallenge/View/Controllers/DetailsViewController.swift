@@ -21,6 +21,7 @@ class DetailsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.title = "Detalhes"
         view.backgroundColor = .white
         navigationController?.navigationBar.isTranslucent = false
         hierarchyView()

@@ -8,6 +8,8 @@ class UserTableViewController: UITableViewController, UserViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.title  = "Desafio"
+        
         tableView.register(UserTableViewCell.self, forCellReuseIdentifier: UserTableViewCell.identifierCell)
     }
     
