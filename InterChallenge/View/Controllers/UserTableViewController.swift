@@ -1,35 +1,31 @@
 import Alamofire
 import UIKit
 
-class ChallengeViewController: UITableViewController, ChallengeViewDelegate {
+class UserTableViewController: UITableViewController, UserViewDelegate {
     
     private var users = [User]()
-    private var presenter: ChallengePresenter?
+    private var presenter: UserPresenter?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.register(UINib(nibName: "UserTableViewCell", bundle: nil), forCellReuseIdentifier: "UserCell")
+        tableView.register(UserTableViewCell.self, forCellReuseIdentifier: UserTableViewCell.identifierCell)
     }
     
-    func setupPresenter(presenter: ChallengePresenter) {
+    func setupPresenter(presenter: UserPresenter) {
         self.presenter = presenter
         self.presenter?.setViewDelegate(viewDelegate: self)
         self.presenter?.getAllUsers()
     }
     
-    func fillUsers(users: [User]?) {
-        guard let users = users else {
-            errorPresent()
-            return
-        }
+    func fillUsers(users: [User]) {
         self.users = users
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }
     }
     
-    private func errorPresent() {
-        let alert = UIAlertController(title: "Erro", message: "Algo errado aconteceu. Tente novamente mais tarde.", preferredStyle: .alert)
+    func errorPresent(error: DomainError) {
+        let alert = UIAlertController(title: "Error - \(error.localizedDescription)", message: "Algo errado aconteceu. Tente novamente mais tarde.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
             alert.dismiss(animated: true)
         }))
@@ -41,7 +37,7 @@ class ChallengeViewController: UITableViewController, ChallengeViewDelegate {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "UserCell", for: indexPath) as? UserTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: UserTableViewCell.identifierCell, for: indexPath) as? UserTableViewCell else {
             return UITableViewCell()
         }
         let user = users[indexPath.row]
@@ -56,9 +52,13 @@ class ChallengeViewController: UITableViewController, ChallengeViewDelegate {
         cell.contentView.backgroundColor = indexPath.row % 2 == 0 ? .white : UIColor(white: 0.667, alpha: 0.2)
         return cell
     }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 240
+    }
 }
 
-extension ChallengeViewController: UserTableViewCellDelegate {
+extension UserTableViewController: UserTableViewCellDelegate {
     func didTapAlbums(with userId: Int, by name: String) {
         presenter?.presentAlbum(userId: userId, name: name)
     }

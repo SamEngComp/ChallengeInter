@@ -4,43 +4,39 @@ import UIKit
 class AlbumTableViewController: UITableViewController, AlbumViewDelegate {
 
     private var userId: Int?
-    private var userName: String?
+    private var name: String?
     private var albums = [Album]()
-    private var presenter: AlbumsPresenter?
+    private var presenter: AlbumPresenter?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.register(UINib(nibName: "AlbumTableViewCell", bundle: nil), forCellReuseIdentifier: "AlbumCell")
+        tableView.register(AlbumTableViewCell.self, forCellReuseIdentifier: AlbumTableViewCell.identifierCell)
     }
     
-    func setupAlbumTable(presenter: AlbumsPresenter, userId: Int,userName: String) {
-        self.userId     = userId
-        self.userName   = userName
+    func setupAlbumTable(presenter: AlbumPresenter, userId: Int, name: String) {
+        self.userId = userId
+        self.name   = name
         self.presenter  = presenter
         startAlbumTable()
     }
     
     func startAlbumTable() {
         guard let userId = userId,
-              let userName = userName else { return }
+              let name = name else { return }
         self.presenter?.setViewDelegate(viewDelegate: self)
         self.presenter?.getAllAlbums(userId: userId)
-        navigationItem.title = "Álbuns de \(userName)"
+        navigationItem.title = "Álbuns de \(name)"
     }
     
-    func fillAlbums(albums: [Album]?) {
-        guard let albums = albums else {
-            errorPresent()
-            return
-        }
+    func fillAlbums(albums: [Album]) {
         self.albums = albums
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }
     }
     
-    private func errorPresent() {
-        let alert = UIAlertController(title: "Erro", message: "Algo errado aconteceu. Tente novamente mais tarde.", preferredStyle: .alert)
+    func errorPresent(error: DomainError) {
+        let alert = UIAlertController(title: "Error - \(error.localizedDescription)", message: "Algo errado aconteceu. Tente novamente mais tarde.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
             alert.dismiss(animated: true)
         }))
@@ -53,7 +49,7 @@ class AlbumTableViewController: UITableViewController, AlbumViewDelegate {
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "AlbumCell", for: indexPath) as? AlbumTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: AlbumTableViewCell.identifierCell, for: indexPath) as? AlbumTableViewCell else {
             return UITableViewCell()
         }
 
@@ -65,8 +61,12 @@ class AlbumTableViewController: UITableViewController, AlbumViewDelegate {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let albumId = albums[indexPath.row].id
-        guard let userName = userName else { return }
-        self.presenter?.presetPhoto(albumId: albumId, userName: userName)
+        guard let name = name else { return }
+        self.presenter?.presetPhoto(albumId: albumId, name:  name)
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60
     }
     
 }
