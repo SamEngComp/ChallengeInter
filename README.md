@@ -1,44 +1,16 @@
 # Objetivo
 
-Realizar uma refatoração que melhore as técnicas de programação e arquitetura utilizando tecnologias mais atuais.
+Pensando nesse projeto como curto prazo e com pouca chance de continuar, optei por fazer uma serpação mínima 
+das camadas, utilizei o MVP + Coordinator para isso 😅.
 
-# O que deve ser entregue
+O fluxo é semelhante do apresentado abaixo:
+- Separei alguns protocolos Service para separar os Presenters das requisições e que facilita os tests.
+- Os Remotes implementam os Services e se conectam com o Almofire, a ideia é que a Camada de apresentação não dependa do Alamofire.
+- Utilizei o MVP, pois  as UIViewControllers e UIViews fazem parte da view e todas as reponsabilidades delas ficam com os presenters.
 
-O aplicativo funcionando exatamente como está na versão original. O comportamento e o visual não devem ser alterados.
 
-Publique o resultado da sua refatoração em um repositório público aqui mesmo no GitHub e nos envie o link.
+### Extra
+- Fiz um projeto semelhante a este, mas com mais separção entre as camadas, tento demonstrar o pouco do meu conhecimento sobre clean architecture
+- Link: https://github.com/SamEngComp/ChallengeInter/tree/InterChallenge-clean-architecture ou Só mudar para a branch ChallengeInter-clean-architecture
 
-# O que gostaríamos que fossem utilizados
-
-* Padrão de Arquitetura de Software
-* Design Patterns
-* View code
-* Atenção ao ARC (Automatic Reference Counting)
-* Data Binding
-* Protocolos
-* App funcionando nos diferentes tamanhos de devices
-
-Não é neccessário entregar todos os pontos acima. Faça a refatoração de acordo com os conhecimentos prévios e adquiridos.
-
-# Aplicação
-
-Utilizamos um REST API público para realizar esse desafio, o [{JSON} Placeholder](https://jsonplaceholder.typicode.com).
-
-O app lista alguns usuários, onde estes, possuem álbums de fotos e postagens.
-
-Os álbums possuem uma lista de fotos onde cada uma tem sua tela de detalhes.
-Já cada uma das postagens possuem alguns comentários.
-
-## Endpoints
-
-```
-GET Users: https://jsonplaceholder.typicode.com/users
-GET Albums by User: https://jsonplaceholder.typicode.com/albums?userId=id
-GET Photos by Album: https://jsonplaceholder.typicode.com/photos?albumId=id
-GET Posts by User: https://jsonplaceholder.typicode.com/posts?userId=id
-GET Comments by Post: https://jsonplaceholder.typicode.com/comments?postId=id
-``` 
-
-![Gif app](app.gif)
-
-Até breve! 
+<img width="1715" alt="inter-mvp" src="https://user-images.githubusercontent.com/54647194/131229635-0caf2f17-7fd4-4f03-a4a3-4841df394e0f.png">
